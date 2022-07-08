@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask Auto Logs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
+
+<div class="container py-4">
+    <header class="pb-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+            <span class="fs-4">Flask Auto Logs | Real time add logs from server to client side.</span>
+        </a>
+    </header>
+
+    <div class="p-5 mb-4 bg-light rounded-3">
+
+        <button class="btn btn-primary" id="btn-start">Start Log Data</button>
+    </div>
+
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <h5 class="h5 mb-3">Logs</h5>
+        <textarea wrap="off" class="form-control" disabled="" name="log" id="log" cols="100" rows="20"> </textarea>
+    </div>
+
+
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+            integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+            crossorigin="anonymous"></script>
+    <script>
+
+    const endpoint = window.location.href;
+    console.log(endpoint);
+    var socket = io(endpoint);
+
+
+    socket.on('my response', function(msg) {
+       $('#log').scrollTop($('#log')[0].scrollHeight);
+        document.getElementById('log').innerHTML += msg.data + '\n';
+    });
+
+    document.getElementById('btn-start').addEventListener('click', function () {
+        socket.emit('start', {
+            data: 'start_log_data'
+        });
+    });
+
+    socket.on('button_action', function(msg) {
+        if (msg.data === 'enable') {
+            document.getElementById('btn-start').disabled = false;
+        } else {
+            document.getElementById('btn-start').disabled = true;
+        }
+    });
+    </script>
+    <footer class="pt-3 mt-4 text-muted border-top">
+        &copy; 2022
+    </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+</body>
+</html>
